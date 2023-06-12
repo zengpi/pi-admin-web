@@ -1,0 +1,37 @@
+{
+    "route": {
+        "dashboard": "Dashboard"
+    },
+    "login": {
+        "title": "PI-ADMIN",
+        "username": "Username",
+        "password": "Password",
+        "login": "Login",
+        "logining": "Logining...",
+        "code": "Verification Code",
+        "copyright": "Copyright © 2022 ZnPi All Rights Reserved. "
+    },
+    "system": {
+        "toolbar": {
+            "dashboard": "Dashboard",
+            "info": "Profile",
+            "document": "Document",
+            "logout": "Logout"
+        }
+    },
+    "size": {
+        "small": "Small",
+        "default": "Default",
+        "large": "Large"
+    },
+    "tip": {
+        "switchSizeSuccess": "Succeeded in changing the size"
+    },
+    "vxeApp": {
+        "tenant": {
+            "enterprise": {
+                "name": "enterprise name"
+            }
+        }
+    }
+}

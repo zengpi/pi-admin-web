@@ -1,0 +1,186 @@
+@import "bpmn-js/dist/assets/diagram-js.css";
+@import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
+@import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
+@import "./bpmn.scss";
+
+.process-viewer {
+    position: relative;
+    height: 500px;
+
+    .canvas {
+        height: 100%;
+        background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImEiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgMTBoNDBNMTAgMHY0ME0wIDIwaDQwTTIwIDB2NDBNMCAzMGg0ME0zMCAwdjQwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlMGUwZTAiIG9wYWNpdHk9Ii4yIi8+PHBhdGggZD0iTTQwIDBIMHY0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTBlMGUwIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PC9zdmc+') repeat !important;
+    }
+
+    .success.djs-connection {
+        .djs-visual path {
+            stroke: var(--el-color-success) !important;
+            marker-end: url(#sequenceflow-arrow-success) !important;
+        }
+    }
+
+    .success.djs-connection.condition-expression {
+        .djs-visual path {
+            marker-start: url(#conditional-flow-arrow-success) !important;
+        }
+    }
+
+    .success.djs-shape {
+        .djs-visual rect {
+            stroke: var(--el-color-success) !important;
+            fill: var(--el-color-success) !important;
+            fill-opacity: 0.15 !important;
+        }
+
+        .djs-visual text {
+            fill: var(--el-color-success) !important;
+        }
+
+        .djs-visual path {
+            stroke: var(--el-color-success) !important;
+        }
+
+        .djs-visual polygon {
+            stroke: var(--el-color-success) !important;
+        }
+
+        .djs-visual path:nth-child(2) {
+            stroke: var(--el-color-success) !important;
+            fill: var(--el-color-success) !important;
+        }
+
+        .djs-visual circle {
+            stroke: var(--el-color-success) !important;
+            fill: var(--el-color-success) !important;
+            fill-opacity: 0.15 !important;
+        }
+    }
+
+    .primary.djs-shape {
+        .djs-visual rect {
+            stroke: var(--el-color-primary) !important;
+            fill: var(--el-color-primary) !important;
+            fill-opacity: 0.15 !important;
+            stroke-dasharray: 8 !important;
+        }
+
+        .djs-visual text {
+            fill: var(--el-color-primary) !important;
+        }
+
+        .djs-visual path {
+            stroke: var(--el-color-primary) !important;
+        }
+
+
+        .djs-visual polygon {
+            stroke: var(--el-color-primary) !important;
+        }
+
+        .djs-visual circle {
+            stroke: var(--el-color-primary) !important;
+            fill: var(--el-color-primary) !important;
+            fill-opacity: 0.15 !important;
+        }
+    }
+
+    .warning.djs-connection {
+        .djs-visual path {
+            stroke: var(--el-color-warning) !important;
+            marker-end: url(#sequenceflow-arrow-fail) !important;
+        }
+    }
+
+    .warning.djs-connection.condition-expression {
+        .djs-visual path {
+            marker-start: url(#conditional-flow-arrow-fail) !important;
+        }
+    }
+
+    .warning.djs-shape {
+        .djs-visual rect {
+            stroke: var(--el-color-warning) !important;
+            fill: var(--el-color-warning) !important;
+            fill-opacity: 0.15 !important;
+        }
+
+        .djs-visual text {
+            fill: var(--el-color-warning) !important;
+        }
+
+        .djs-visual path {
+            stroke: var(--el-color-warning) !important;
+        }
+
+        .djs-visual polygon {
+            stroke: var(--el-color-warning) !important;
+        }
+
+        .djs-visual path:nth-child(2) {
+            stroke: var(--el-color-warning) !important;
+            fill: var(--el-color-warning) !important;
+        }
+
+        .djs-visual circle {
+            stroke: var(--el-color-warning) !important;
+            fill: var(--el-color-warning) !important;
+            fill-opacity: 0.15 !important;
+        }
+    }
+
+    .danger.djs-shape {
+        .djs-visual rect {
+            stroke: var(--el-color-danger) !important;
+            fill: var(--el-color-danger) !important;
+            fill-opacity: 0.15 !important;
+        }
+
+        .djs-visual text {
+            fill: var(--el-color-danger) !important;
+        }
+
+        .djs-visual path {
+            stroke: var(--el-color-danger) !important;
+        }
+
+        .djs-visual polygon {
+            stroke: var(--el-color-danger) !important;
+        }
+
+        .djs-visual circle {
+            stroke: var(--el-color-danger) !important;
+            fill: var(--el-color-danger) !important;
+            fill-opacity: 0.15 !important;
+        }
+    }
+
+    .info.djs-shape {
+        .djs-visual rect {
+            stroke: var(--el-color-info) !important;
+            fill: var(--el-color-info) !important;
+            fill-opacity: 0.15 !important;
+        }
+
+        .djs-visual text {
+            fill: var(--el-color-info) !important;
+        }
+
+        .djs-visual path {
+            stroke: var(--el-color-info) !important;
+        }
+
+        .djs-visual polygon {
+            stroke: var(--el-color-info) !important;
+        }
+
+        .djs-visual circle {
+            stroke: var(--el-color-info) !important;
+            fill: var(--el-color-info) !important;
+            fill-opacity: 0.15 !important;
+        }
+    }
+}
+
+.bjs-powered-by {
+    display: none !important;
+}

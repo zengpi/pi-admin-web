@@ -1,0 +1,70 @@
+.app-container {
+    .el-main {
+        --el-main-padding: 0 !important;
+    }
+}
+
+.fixed-app-container {
+    height: calc(100vh - 111px);
+
+    .el-main {
+        --el-main-padding: 0 !important;
+        height: calc(100vh - 261px);
+
+        .el-table {
+            height: 100%;
+        }
+    }
+}
+
+.app-container,
+.fixed-app-container {
+    padding: 10px;
+
+    .el-header {
+        --el-header-padding: 0 !important;
+        --el-header-height: auto !important;
+        padding-bottom: 10px;
+
+        .query {
+            padding-bottom: 4px;
+
+            .query-item {
+                margin: 5px 3px 0 0;
+                vertical-align: middle;
+            }
+        }
+
+        .tools {
+            padding: 4px 0;
+            display: flex;
+
+            .tools-right {
+                margin-left: auto;
+            }
+
+            .tool-item {
+                vertical-align: middle;
+                margin: 0 3px 0 0;
+            }
+        }
+    }
+
+    .el-footer {
+        --el-footer-padding: 0 !important;
+        --el-footer-height: auto !important;
+    }
+
+    .pagination {
+        border: 1px solid #e8eaec;
+        border: 1px solid rgb(232, 234, 236);
+        border-top: 0;
+        padding: 5px;
+        display: flex;
+        justify-content: flex-end;
+    }
+}
+
+.splitpanes.default-theme .splitpanes__pane {
+    background: #fff !important;
+}
