@@ -12,10 +12,10 @@ import type {
   BootableDefinitionQuery,
   ProcessDefinition,
   ProcessDefinitionQuery,
-} from "@/model/process-management/process-definition";
-import type { ProcessForm } from "@/model/process-center";
+} from "@/model/process/process-management/process-definition";
+import type { ProcessDefinitionForm } from "@/model/process/process-management/process-form";
 
-const BASE_URL = "/workflow/definition";
+const BASE_URL = "/workflow/process-definitions";
 
 /**
  * 获取流程定义
@@ -38,10 +38,10 @@ function getBootableDefinition(
 /**
  * 获取流程定义表单
  */
-function getProcessDefinitionForm(
+function getProcessDefinitionStartForm(
   processDefinitionId: string
-): AxiosPromise<ProcessForm> {
-  return request.get(`${BASE_URL}/processForm/${processDefinitionId}`);
+): AxiosPromise<ProcessDefinitionForm> {
+  return request.get(`${BASE_URL}/${processDefinitionId}/start-form`);
 }
 
 /**
@@ -78,10 +78,10 @@ function getHistoryProcessDefinitions(
 export {
   getProcessDefinition,
   getBootableDefinition,
-  getProcessDefinitionForm,
   getBpmnXml,
   // 更改状态
   changeState,
   // 获取流程部署历史版本
   getHistoryProcessDefinitions,
+  getProcessDefinitionStartForm
 };

@@ -22,21 +22,21 @@ import "splitpanes/dist/splitpanes.css";
 import {
   getProcessDeployments,
   deleteProcessDeployments,
-} from "@/api/process-management/process-deployment";
-import { changeState } from "@/api/process-management/process-definition";
+} from "@/api/process/process-management/process-deployment";
+import { changeState } from "@/api/process/process-management/process-definition";
 
 import { BaseQuery } from "@/model";
-import type { ProcessDeployment } from "@/model/process-management/process-deployment";
+import type { ProcessDeployment } from "@/model/process/process-management/process-deployment";
 import {
   ProcessDefinitionQuery,
   ProcessDefinitionDialog,
   type ProcessDefinition,
-} from "@/model/process-management/process-definition";
+} from "@/model/process/process-management/process-definition";
 
 import Pagination from "@/components/Pagination.vue";
 import ProcessDiagramDialogVue from "@/components/workflow/ProcessDiagramDialog.vue";
 import HistoryDialogVue from "./HistoryDialog.vue";
-import { getProcessDefinition } from "@/api/process-management/process-definition";
+import { getProcessDefinition } from "@/api/process/process-management/process-definition";
 
 const query = ref(new BaseQuery());
 
@@ -127,7 +127,7 @@ function doDel(ids: string[]) {
           delBtnLoading.value = false;
         });
     })
-    .catch(() => {});
+    .catch(() => { });
 }
 
 function handleTableRowClick(row: ProcessDeployment, column: any) {
@@ -205,19 +205,13 @@ function handleToCheckHistory(row: ProcessDefinition) {
 </script>
 
 <template>
-  <splitpanes class="default-theme">
-    <pane size="30" min-size="20" max-size="50" style="padding-right: 10px">
+  <Splitpanes class="default-theme">
+    <Pane size="30" min-size="20" max-size="50" style="padding-right: 10px">
       <div class="fixed-app-container">
         <el-header>
           <div class="tools">
             <div class="tools-left">
-              <el-button
-                type="danger"
-                :icon="Delete"
-                :loading="delBtnLoading"
-                class="tool-item"
-                @click="handleDelBatch"
-              >
+              <el-button type="danger" :icon="Delete" :loading="delBtnLoading" class="tool-item" @click="handleDelBatch">
                 删除
               </el-button>
             </div>
@@ -231,117 +225,44 @@ function handleToCheckHistory(row: ProcessDefinition) {
           </div>
         </el-header>
         <el-main class="deployment-main">
-          <el-table
-            ref="table"
-            :data="tableData"
-            v-loading="loading"
-            stripe
-            border
-            @row-click="handleTableRowClick"
-          >
+          <el-table ref="table" :data="tableData" v-loading="loading" stripe border @row-click="handleTableRowClick">
             <el-table-column type="selection" width="55" align="center" />
-            <el-table-column
-              prop="deploymentTime"
-              label="部署时间"
-              align="center"
-              width="180"
-            />
-            <el-table-column
-              prop="name"
-              label="名称"
-              align="center"
-              show-overflow-tooltip
-            />
+            <el-table-column prop="deploymentTime" label="部署时间" align="center" width="180" />
+            <el-table-column prop="name" label="名称" align="center" show-overflow-tooltip />
 
-            <el-table-column
-              fixed="right"
-              label="操作"
-              width="90px"
-              align="center"
-              #default="{ row }"
-            >
-              <el-button
-                v-has-authority="['workflow_deployment_delete']"
-                type="danger"
-                :icon="Delete"
-                link
-                :loading="delBtnLoading"
-                @click="handleDel(row)"
-                >删除</el-button
-              >
+            <el-table-column fixed="right" label="操作" width="90px" align="center" #default="{ row }">
+              <el-button v-has-authority="['workflow_deployment_delete']" type="danger" :icon="Delete" link
+                :loading="delBtnLoading" @click="handleDel(row)">删除</el-button>
             </el-table-column>
           </el-table>
         </el-main>
         <el-footer>
-          <Pagination
-            :total="total"
-            v-model:current-page="query.pageNum"
-            v-model:page-size="query.pageSize"
-            @pagination="loadData"
-          />
+          <Pagination :total="total" v-model:current-page="query.pageNum" v-model:page-size="query.pageSize"
+            @pagination="loadData" />
         </el-footer>
       </div>
-    </pane>
-    <pane>
+    </Pane>
+    <Pane>
       <div class="fixed-app-container">
         <el-header>
           <div class="query">
             <template v-if="showQuery">
               <span class="el-text mx-1 query-item">流程标识：</span>
-              <el-input
-                v-model="definitionQuery.key"
-                clearable
-                placeholder="流程标识"
-                class="query-item"
-                style="width: auto"
-                @keyup.enter="loadDefinitionData"
-              />
+              <el-input v-model="definitionQuery.key" clearable placeholder="流程标识" class="query-item" style="width: auto"
+                @keyup.enter="loadDefinitionData" />
               <span class="el-text mx-1 query-item">流程名称：</span>
-              <el-input
-                v-model="definitionQuery.name"
-                clearable
-                placeholder="流程名称"
-                class="query-item"
-                style="width: auto"
-                @keyup.enter="loadDefinitionData"
-              />
+              <el-input v-model="definitionQuery.name" clearable placeholder="流程名称" class="query-item" style="width: auto"
+                @keyup.enter="loadDefinitionData" />
               <span class="el-text mx-1 query-item">流程分类：</span>
-              <el-input
-                v-model="definitionQuery.category"
-                clearable
-                placeholder="流程分类"
-                class="query-item"
-                style="width: auto"
-                @keyup.enter="loadDefinitionData"
-              />
+              <el-input v-model="definitionQuery.category" clearable placeholder="流程分类" class="query-item"
+                style="width: auto" @keyup.enter="loadDefinitionData" />
               <span class="el-text mx-1 query-item">状态：</span>
-              <el-select
-                v-model="definitionQuery.suspended"
-                clearable
-                placeholder="选择状态"
-                class="query-item"
-              >
-                <el-option
-                  v-for="item in statusOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+              <el-select v-model="definitionQuery.suspended" clearable placeholder="选择状态" class="query-item">
+                <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
-              <el-button
-                type="success"
-                :icon="Search"
-                class="query-item"
-                @click="loadDefinitionData"
-              >
-                搜索</el-button
-              >
-              <el-button
-                type="warning"
-                :icon="RefreshLeft"
-                class="query-item"
-                @click="handleResetQuery"
-                >重置
+              <el-button type="success" :icon="Search" class="query-item" @click="loadDefinitionData">
+                搜索</el-button>
+              <el-button type="warning" :icon="RefreshLeft" class="query-item" @click="handleResetQuery">重置
               </el-button>
             </template>
           </div>
@@ -358,103 +279,36 @@ function handleToCheckHistory(row: ProcessDefinition) {
             </div>
           </div>
         </el-header>
-        <el-table
-          ref="definitionTable"
-          :data="definitionTableData"
-          v-loading="definitionLoading"
-          stripe
-          border
-        >
+        <el-table ref="definitionTable" :data="definitionTableData" v-loading="definitionLoading" stripe border>
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column
-            prop="key"
-            label="流程标识"
-            align="center"
-            show-overflow-tooltip
-          />
-          <el-table-column
-            prop="name"
-            label="流程名称"
-            align="center"
-            show-overflow-tooltip
-          />
-          <el-table-column
-            prop="category"
-            label="流程分类"
-            align="center"
-            show-overflow-tooltip
-          />
-          <el-table-column
-            prop="version"
-            label="版本"
-            align="center"
-            #default="{ row }"
-          >
+          <el-table-column prop="key" label="流程标识" align="center" show-overflow-tooltip />
+          <el-table-column prop="name" label="流程名称" align="center" show-overflow-tooltip />
+          <el-table-column prop="category" label="流程分类" align="center" show-overflow-tooltip />
+          <el-table-column prop="version" label="版本" align="center" #default="{ row }">
             <el-tag type="success">v{{ row.version }}</el-tag>
           </el-table-column>
-          <el-table-column
-            prop="suspended"
-            label="状态"
-            align="center"
-            #default="{ row }"
-          >
-            <el-switch
-              v-model="row.suspended"
-              :active-value="false"
-              :inactive-value="true"
-              :loading="changeStateLoading"
+          <el-table-column prop="suspended" label="状态" align="center" #default="{ row }">
+            <el-switch v-model="row.suspended" :active-value="false" :inactive-value="true" :loading="changeStateLoading"
               style="
                 --el-switch-on-color: #13ce66;
                 --el-switch-off-color: #ff4949;
-              "
-              @change="handleChageState(row)"
-            />
+              " @change="handleChageState(row)" />
           </el-table-column>
 
-          <el-table-column
-            fixed="right"
-            label="操作"
-            width="200"
-            align="center"
-            #default="{ row }"
-          >
-            <el-button
-              type="primary"
-              :icon="Picture"
-              link
-              @click="handleToCheckProcessDiagram(row)"
-              >流程图</el-button
-            >
-            <el-button
-              type="warning"
-              :icon="Guide"
-              link
-              @click="handleToCheckHistory(row)"
-              >历史版本</el-button
-            >
+          <el-table-column fixed="right" label="操作" width="200" align="center" #default="{ row }">
+            <el-button type="primary" :icon="Picture" link @click="handleToCheckProcessDiagram(row)">流程图</el-button>
+            <el-button type="warning" :icon="Guide" link @click="handleToCheckHistory(row)">历史版本</el-button>
           </el-table-column>
         </el-table>
-        <Pagination
-          :total="definitionTotal"
-          v-model:current-page="definitionQuery.pageNum"
-          v-model:page-size="definitionQuery.pageSize"
-          @pagination="loadDefinitionData"
-        />
-        <ProcessDiagramDialogVue
-          v-if="
-            processDiagramDialog.dialogVisible && processDiagramDialog.processId
-          "
-          v-model:dialog-visible="processDiagramDialog.dialogVisible"
-          :process-id="processDiagramDialog.processId"
-        />
-        <HistoryDialogVue
-          v-if="historyDialog.dialogVisible && historyDialog.processKey"
-          v-model:dialog-visible="historyDialog.dialogVisible"
-          :process-key="historyDialog.processKey"
-        />
+        <Pagination :total="definitionTotal" v-model:current-page="definitionQuery.pageNum"
+          v-model:page-size="definitionQuery.pageSize" @pagination="loadDefinitionData" />
+        <ProcessDiagramDialogVue v-if="processDiagramDialog.dialogVisible && processDiagramDialog.processId
+          " v-model:dialog-visible="processDiagramDialog.dialogVisible" :process-id="processDiagramDialog.processId" />
+        <HistoryDialogVue v-if="historyDialog.dialogVisible && historyDialog.processKey"
+          v-model:dialog-visible="historyDialog.dialogVisible" :process-key="historyDialog.processKey" />
       </div>
-    </pane>
-  </splitpanes>
+    </Pane>
+  </Splitpanes>
 </template>
 
 <style lang="scss" scoped>

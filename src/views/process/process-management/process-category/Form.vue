@@ -3,9 +3,9 @@ import { ref, onMounted, computed } from "vue";
 
 import { ElForm, ElMessage, type FormRules } from "element-plus";
 
-import { ProcessCategory } from "@/model/process-management/process-category";
+import { ProcessCategory } from "@/model/process/process-management/process-category";
 
-import { saveOrUpdate } from "@/api/process-management/process-category";
+import { saveOrUpdate } from "@/api/process/process-management/process-category";
 
 const emit = defineEmits<{
   (e: "update:dialogVisible", dialogVisible: boolean): void;

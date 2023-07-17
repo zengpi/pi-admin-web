@@ -12,7 +12,7 @@ import type {
   ProcessModel,
   ProcessModelQuery,
   SaveModelDesign,
-} from "@/model/process-management/process-model";
+} from "@/model/process/process-management/process-model";
 
 const BASE_URL = "/workflow/model";
 

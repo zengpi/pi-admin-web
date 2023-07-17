@@ -20,13 +20,13 @@ import {
   cancelProcessInstance,
   deleteProcessInstance,
   getMyProcesses,
-} from "@/api/process-center/process-instance";
+} from "@/api/process/process-center/process-instance";
 
-import { ProcessDetailDialog } from "@/model/process-center";
+import { ProcessDetailDialog } from "@/model/process/process-center";
 import {
   MyProcessQuery,
   type MyProcess,
-} from "@/model/process-center/process-instance";
+} from "@/model/process/process-center/process-instance";
 
 import Pagination from "@/components/Pagination.vue";
 import ProcessDetail from "@/components/workflow/ProcessDetail.vue";
@@ -119,46 +119,17 @@ function handleDelete(row: MyProcess) {
       <div class="query">
         <template v-if="showQuery">
           <span class="el-text mx-1 query-item">流程标识：</span>
-          <el-input
-            v-model="query.key"
-            clearable
-            placeholder="流程标识"
-            class="query-item"
-            style="width: auto"
-            @keyup.enter="loadData"
-          />
+          <el-input v-model="query.key" clearable placeholder="流程标识" class="query-item" style="width: auto"
+            @keyup.enter="loadData" />
           <span class="el-text mx-1 query-item">流程名称：</span>
-          <el-input
-            v-model="query.name"
-            clearable
-            placeholder="流程名称"
-            class="query-item"
-            style="width: auto"
-            @keyup.enter="loadData"
-          />
+          <el-input v-model="query.name" clearable placeholder="流程名称" class="query-item" style="width: auto"
+            @keyup.enter="loadData" />
           <span class="el-text mx-1 query-item">流程分类：</span>
-          <el-input
-            v-model="query.category"
-            clearable
-            placeholder="流程分类"
-            class="query-item"
-            style="width: auto"
-            @keyup.enter="loadData"
-          />
-          <el-button
-            type="success"
-            :icon="Search"
-            class="query-item"
-            @click="loadData"
-          >
-            搜索</el-button
-          >
-          <el-button
-            type="warning"
-            :icon="RefreshLeft"
-            class="query-item"
-            @click="handleResetQuery"
-            >重置
+          <el-input v-model="query.category" clearable placeholder="流程分类" class="query-item" style="width: auto"
+            @keyup.enter="loadData" />
+          <el-button type="success" :icon="Search" class="query-item" @click="loadData">
+            搜索</el-button>
+          <el-button type="warning" :icon="RefreshLeft" class="query-item" @click="handleResetQuery">重置
           </el-button>
         </template>
       </div>
@@ -178,90 +149,31 @@ function handleDelete(row: MyProcess) {
     <el-main>
       <el-table ref="table" :data="tableData" v-loading="loading" stripe border>
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column
-          prop="processDefinitionName"
-          label="流程名称"
-          align="center"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="processCategory"
-          label="流程分类"
-          align="center"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="processDefinitionVersion"
-          label="版本"
-          align="center"
-          #default="{ row }"
-        >
-          <el-tag type="warning">v{{ row.processDefinitionVersion }}</el-tag>
+        <el-table-column prop="processDefinitionName" label="流程名称" align="center" show-overflow-tooltip />
+        <el-table-column prop="processCategory" label="流程分类" align="center" show-overflow-tooltip />
+        <el-table-column prop="processDefinitionVersion" label="版本" align="center" #default="{ row }">
+          <el-tag>v{{ row.processDefinitionVersion }}</el-tag>
         </el-table-column>
-        <el-table-column
-          prop="currentNode"
-          label="当前节点"
-          align="center"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="startTime"
-          label="提交时间"
-          align="center"
-          show-overflow-tooltip
-        />
+        <el-table-column prop="currentNode" label="当前节点" align="center" show-overflow-tooltip />
+        <el-table-column prop="startTime" label="提交时间" align="center" show-overflow-tooltip />
         <el-table-column label="状态" align="center" #default="{ row }">
-          <el-tag v-if="!row.endTime">进行中</el-tag>
-          <el-tag v-else>已完成</el-tag>
+          <el-tag v-if="!row.endTime" type="warning">进行中</el-tag>
+          <el-tag v-else type="success">已完成</el-tag>
         </el-table-column>
-        <el-table-column
-          prop="duration"
-          label="耗时"
-          align="center"
-          show-overflow-tooltip
-        />
+        <el-table-column prop="duration" label="耗时" align="center" show-overflow-tooltip />
 
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="230"
-          align="center"
-          #default="{ row }"
-        >
-          <el-button type="primary" :icon="View" link @click="handleDetail(row)"
-            >详情</el-button
-          >
-          <el-button
-            type="warning"
-            :icon="Remove"
-            link
-            @click="handleCancel(row)"
-            :loading="cancelLoading"
-            >取消</el-button
-          >
-          <el-button
-            type="danger"
-            :icon="Delete"
-            link
-            @click="handleDelete(row)"
-            :loading="deleteLoading"
-            >删除</el-button
-          >
+        <el-table-column fixed="right" label="操作" width="230" align="center" #default="{ row }">
+          <el-button type="primary" :icon="View" link @click="handleDetail(row)">详情</el-button>
+          <el-button type="warning" :icon="Remove" link @click="handleCancel(row)" :loading="cancelLoading">取消</el-button>
+          <el-button type="danger" :icon="Delete" link @click="handleDelete(row)" :loading="deleteLoading">删除</el-button>
         </el-table-column>
       </el-table>
     </el-main>
     <el-footer>
-      <Pagination
-        :total="total"
-        v-model:current-page="query.pageNum"
-        v-model:page-size="query.pageSize"
-        @pagination="loadData"
-      />
+      <Pagination :total="total" v-model:current-page="query.pageNum" v-model:page-size="query.pageSize"
+        @pagination="loadData" />
     </el-footer>
-    <ProcessDetail
-      v-if="detailDialog.dialogVisible"
-      v-model:dialog-visible="detailDialog.dialogVisible"
-      :process-instance-id="detailDialog.processInstanceId"
-    />
+    <ProcessDetail v-if="detailDialog.dialogVisible" v-model:dialog-visible="detailDialog.dialogVisible"
+      :process-instance-id="detailDialog.processInstanceId" />
   </div>
 </template>

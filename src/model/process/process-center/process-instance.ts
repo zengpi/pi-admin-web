@@ -1,5 +1,5 @@
-import type { ProcessForm } from ".";
-import { PageQuery } from "..";
+import type { ProcessDefinitionForm } from "@/model/process/process-management/process-form";
+import { PageQuery } from "../..";
 
 class ProcessInstance {
   /**
@@ -39,6 +39,30 @@ class ProcessInstance {
    * 耗时
    */
   duration?: string;
+}
+
+class StartProcessInstanceForm {
+  /**
+     * 流程实例 id
+     */
+  processDefinitionId?: string;
+
+  /**
+   * 名称
+   */
+  processDefinitionName?: string;
+
+  /**
+   * 流程变量
+   */
+  variables?: any;
+
+  /**
+   * 是否内置表单（0:=否；1:是）
+   */
+  isBuiltInForm?: number;
+
+  outcome?: string;
 }
 
 class MyProcess {
@@ -208,7 +232,7 @@ class ProcessInstanceDetail {
   /**
    * 表单
    */
-  forms: ProcessForm[] = [];
+  forms: ProcessDefinitionForm[] = [];
   /**
    * 日志
    */
@@ -225,6 +249,7 @@ class ProcessInstanceDetail {
 
 export {
   ProcessInstance,
+  StartProcessInstanceForm,
   MyProcess,
   ProcessInstanceQuery,
   MyProcessQuery,

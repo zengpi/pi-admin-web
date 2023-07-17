@@ -1,4 +1,4 @@
-import { BaseDialog, PageQuery } from "..";
+import { BaseDialog, PageQuery } from "../..";
 
 class ProcessDefinition {
   /**
@@ -81,6 +81,7 @@ class ProcessDefinitionDialog extends BaseDialog {
 
 class StartProcessDialog extends BaseDialog {
   processDefinitionId!: string;
+  processDefinitionName!: string;
 }
 
 export {

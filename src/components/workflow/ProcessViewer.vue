@@ -25,7 +25,7 @@ import { query as domQuery } from "min-dom";
 import type {
   ProcessInstanceLog,
   ViewerElement,
-} from "@/model/process-center/process-instance";
+} from "@/model/process/process-center/process-instance";
 
 const props = defineProps<{
   bpmnXml: string;

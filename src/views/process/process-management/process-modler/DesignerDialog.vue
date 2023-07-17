@@ -8,12 +8,12 @@ import { computed, onMounted, ref } from "vue";
 
 import { ElMessage, ElMessageBox } from "element-plus";
 
-import { SaveModelDesign as SaveModelDesignModel } from "@/model/process-management/process-model";
+import { SaveModelDesign as SaveModelDesignModel } from "@/model/process/process-management/process-model";
 
 import {
   getBpmnXml,
   saveModelDesign,
-} from "@/api/process-management/process-model";
+} from "@/api/process/process-management/process-model";
 
 import ProcessDesigner from "@/components/workflow/process-designer/Index";
 

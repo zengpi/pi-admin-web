@@ -13,8 +13,8 @@ import type {
   ApproveReject,
   DoneTask,
   Copy,
-} from "@/model/process-center/process-task";
-import type { ProcessForm } from "@/model/process-center";
+} from "@/model/process/process-center/process-task";
+import type { ProcessDefinitionForm } from "@/model/process/process-management/process-form";
 
 const BASE_URL = "/workflow/task";
 
@@ -33,7 +33,7 @@ function getTodoTask(query: TaskQuery): AxiosPromise<Page<TodoTask>> {
  * @param taskId 任务 ID
  * @return 任务表单
  */
-function getTaskForm(taskId: string): AxiosPromise<ProcessForm> {
+function getTaskForm(taskId: string): AxiosPromise<ProcessDefinitionForm> {
   return request.get(`${BASE_URL}/form/${taskId}`);
 }
 

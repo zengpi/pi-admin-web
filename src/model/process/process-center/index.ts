@@ -1,4 +1,4 @@
-class ProcessForm {
+class ProcessDefinitionForm {
   /**
    * 表单 ID
    */
@@ -18,7 +18,7 @@ class ProcessForm {
   /**
    * 表单数据
    */
-  formData?: object;
+  fields?: object;
 
   /**
    * 表单组件（前端自己生成）
@@ -32,4 +32,4 @@ class ProcessDetailDialog {
   taskId?: string;
 }
 
-export { ProcessForm, ProcessDetailDialog };
+export { ProcessDefinitionForm, ProcessDetailDialog };

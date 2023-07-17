@@ -1,4 +1,4 @@
-<script setup lang="ts" name="ProcessCenterProcessCreate">
+<script setup lang="ts" name="ProcessCenterStartProcess">
 /**
  * 流程新建
  * @author ZnPi
@@ -20,9 +20,9 @@ import {
   ProcessDefinitionDialog,
   StartProcessDialog,
   type ProcessDefinition,
-} from "@/model/process-management/process-definition";
+} from "@/model/process/process-management/process-definition";
 
-import { getBootableDefinition } from "@/api/process-management/process-definition";
+import { getBootableDefinition } from "@/api/process/process-management/process-definition";
 
 import Pagination from "@/components/Pagination.vue";
 import ProcessDiagramDialogVue from "@/components/workflow/ProcessDiagramDialog.vue";
@@ -71,6 +71,7 @@ function handleToCheckProcessDiagram(row: ProcessDefinition) {
 function handleCreate(row: ProcessDefinition) {
   startProcessDialog.value.dialogVisible = true;
   startProcessDialog.value.processDefinitionId = row.id!;
+  startProcessDialog.value.processDefinitionName = row.name!;
 }
 </script>
 
@@ -80,46 +81,17 @@ function handleCreate(row: ProcessDefinition) {
       <div class="query">
         <template v-if="showQuery">
           <span class="el-text mx-1 query-item">流程标识：</span>
-          <el-input
-            v-model="definitionQuery.key"
-            clearable
-            placeholder="流程标识"
-            class="query-item"
-            style="width: auto"
-            @keyup.enter="loadDefinitionData"
-          />
+          <el-input v-model="definitionQuery.key" clearable placeholder="流程标识" class="query-item" style="width: auto"
+            @keyup.enter="loadDefinitionData" />
           <span class="el-text mx-1 query-item">流程名称：</span>
-          <el-input
-            v-model="definitionQuery.name"
-            clearable
-            placeholder="流程名称"
-            class="query-item"
-            style="width: auto"
-            @keyup.enter="loadDefinitionData"
-          />
+          <el-input v-model="definitionQuery.name" clearable placeholder="流程名称" class="query-item" style="width: auto"
+            @keyup.enter="loadDefinitionData" />
           <span class="el-text mx-1 query-item">流程分类：</span>
-          <el-input
-            v-model="definitionQuery.category"
-            clearable
-            placeholder="流程分类"
-            class="query-item"
-            style="width: auto"
-            @keyup.enter="loadDefinitionData"
-          />
-          <el-button
-            type="success"
-            :icon="Search"
-            class="query-item"
-            @click="loadDefinitionData"
-          >
-            搜索</el-button
-          >
-          <el-button
-            type="warning"
-            :icon="RefreshLeft"
-            class="query-item"
-            @click="handleResetQuery"
-            >重置
+          <el-input v-model="definitionQuery.category" clearable placeholder="流程分类" class="query-item" style="width: auto"
+            @keyup.enter="loadDefinitionData" />
+          <el-button type="success" :icon="Search" class="query-item" @click="loadDefinitionData">
+            搜索</el-button>
+          <el-button type="warning" :icon="RefreshLeft" class="query-item" @click="handleResetQuery">重置
           </el-button>
         </template>
       </div>
@@ -137,84 +109,30 @@ function handleCreate(row: ProcessDefinition) {
       </div>
     </el-header>
     <el-main>
-      <el-table
-        ref="definitionTable"
-        :data="definitionTableData"
-        v-loading="definitionLoading"
-        stripe
-        border
-      >
+      <el-table ref="definitionTable" :data="definitionTableData" v-loading="definitionLoading" stripe border>
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column
-          prop="key"
-          label="流程标识"
-          align="center"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="name"
-          label="流程名称"
-          align="center"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="category"
-          label="流程分类"
-          align="center"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="version"
-          label="版本"
-          align="center"
-          #default="{ row }"
-        >
+        <el-table-column prop="key" label="流程标识" align="center" show-overflow-tooltip />
+        <el-table-column prop="name" label="流程名称" align="center" show-overflow-tooltip />
+        <el-table-column prop="category" label="流程分类" align="center" show-overflow-tooltip />
+        <el-table-column prop="version" label="版本" align="center" #default="{ row }">
           <el-tag type="warning">v{{ row.version }}</el-tag>
         </el-table-column>
 
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="200"
-          align="center"
-          #default="{ row }"
-        >
-          <el-button
-            type="primary"
-            :icon="Picture"
-            link
-            @click="handleToCheckProcessDiagram(row)"
-            >流程图</el-button
-          >
-          <el-button
-            type="success"
-            :icon="VideoPlay"
-            link
-            @click="handleCreate(row)"
-            >发起</el-button
-          >
+        <el-table-column fixed="right" label="操作" width="200" align="center" #default="{ row }">
+          <el-button type="primary" :icon="Picture" link @click="handleToCheckProcessDiagram(row)">流程图</el-button>
+          <el-button type="success" :icon="VideoPlay" link @click="handleCreate(row)">发起</el-button>
         </el-table-column>
       </el-table>
     </el-main>
     <el-footer>
-      <Pagination
-        :total="definitionTotal"
-        v-model:current-page="definitionQuery.pageNum"
-        v-model:page-size="definitionQuery.pageSize"
-        @pagination="loadDefinitionData"
-      />
+      <Pagination :total="definitionTotal" v-model:current-page="definitionQuery.pageNum"
+        v-model:page-size="definitionQuery.pageSize" @pagination="loadDefinitionData" />
     </el-footer>
-    <ProcessDiagramDialogVue
-      v-if="
-        processDiagramDialog.dialogVisible && processDiagramDialog.processId
-      "
-      v-model:dialog-visible="processDiagramDialog.dialogVisible"
-      :process-id="processDiagramDialog.processId"
-    />
-    <StartProcessDialogVue
-      v-if="startProcessDialog.dialogVisible"
+    <ProcessDiagramDialogVue v-if="processDiagramDialog.dialogVisible && processDiagramDialog.processId
+      " v-model:dialog-visible="processDiagramDialog.dialogVisible" :process-id="processDiagramDialog.processId" />
+    <StartProcessDialogVue v-if="startProcessDialog.dialogVisible"
       v-model:dialog-visible="startProcessDialog.dialogVisible"
       :process-definition-id="startProcessDialog.processDefinitionId"
-    />
+      :process-definition-name="startProcessDialog.processDefinitionName" />
   </div>
 </template>

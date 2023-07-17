@@ -23,18 +23,18 @@ import {
   getModels,
   deployModel,
   deleteModels,
-} from "@/api/process-management/process-model";
+} from "@/api/process/process-management/process-model";
 
 import { FormDialog } from "@/model";
 import {
   type ProcessModel,
   ProcessModelQuery,
   DesignerDialog,
-} from "@/model/process-management/process-model";
+} from "@/model/process/process-management/process-model";
 import {
   ProcessCategoryDialog,
   type ProcessCategory,
-} from "@/model/process-management/process-category";
+} from "@/model/process/process-management/process-category";
 
 import Pagination from "@/components/Pagination.vue";
 import Form from "./Form.vue";

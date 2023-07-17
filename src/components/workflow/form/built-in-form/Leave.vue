@@ -9,7 +9,7 @@ import { onMounted, ref } from "vue";
 import { ElForm, ElMessage, type FormRules } from "element-plus";
 import { Search } from "@element-plus/icons-vue";
 
-import { LeaveFormData } from "@/model/components/workflow/form";
+import { LeaveFormData } from "@/model/components/workflow/built-in-form";
 import { OptionalUserDialog, type OptionalUser } from "@/model/system/user";
 
 import OptionalUserVue from "@/views/system/user/OptionalUser.vue";
@@ -82,6 +82,7 @@ onMounted(() => {
   if (props.formData) {
     formData.value = props.formData;
   }
+  console.log(formData.value)
 });
 
 function handleSelectUser() {
@@ -130,18 +131,9 @@ defineExpose({
       <el-row :gutter="10">
         <el-col :span="8">
           <el-form-item label="工号" prop="username">
-            <el-input
-              v-model="formData.username"
-              placeholder="请选择"
-              readonly
-              :disabled="disabled"
-            >
+            <el-input v-model="formData.username" placeholder="请选择" readonly :disabled="disabled">
               <template #append>
-                <el-button
-                  :icon="Search"
-                  @click="handleSelectUser"
-                  :disabled="disabled"
-                />
+                <el-button :icon="Search" @click="handleSelectUser" :disabled="disabled" />
               </template>
             </el-input>
           </el-form-item>
@@ -153,111 +145,57 @@ defineExpose({
         </el-col>
         <el-col :span="8">
           <el-form-item label="部门" prop="deptName">
-            <el-input
-              v-model="formData.deptName"
-              readonly
-              :disabled="disabled"
-            />
+            <el-input v-model="formData.deptName" readonly :disabled="disabled" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="请假类型" prop="type">
-            <el-select
-              v-model="formData.type"
-              class="m-2"
-              filterable
-              :disabled="disabled"
-            >
-              <el-option
-                v-for="item in typeOptions"
-                :key="item.label"
-                :label="item.label"
-                :value="item.label"
-              />
+            <el-select v-model="formData.type" class="m-2" filterable :disabled="disabled">
+              <el-option v-for="item in typeOptions" :key="item.label" :label="item.label" :value="item.label" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="请假时间" prop="time">
-            <el-date-picker
-              v-model="formData.time"
-              type="datetimerange"
-              range-separator="到"
-              start-placeholder="开始时间"
-              end-placeholder="结束时间"
-              :disabled="disabled"
-            />
+            <el-date-picker v-model="formData.time" type="datetimerange" range-separator="到" start-placeholder="开始时间"
+              end-placeholder="结束时间" :disabled="disabled" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="请假累计时间" prop="durationDate">
-            <el-input-number
-              v-model="formData.durationDate"
-              :min="0"
-              :disabled="disabled"
-            />
+            <el-input-number v-model="formData.durationDate" :min="0" :disabled="disabled" />
             <span style="margin: 0 10px 0 10px">天</span>
-            <el-input-number
-              v-model="formData.durationHour"
-              :min="0"
-              :disabled="disabled"
-            />
+            <el-input-number v-model="formData.durationHour" :min="0" :disabled="disabled" />
             <span style="margin: 0 10px 0 10px">小时</span>
           </el-form-item>
         </el-col>
 
         <el-col :span="8">
           <el-form-item label="假期代理人" prop="agent">
-            <el-input
-              v-model="formData.agent"
-              placeholder="请选择"
-              readonly
-              :disabled="disabled"
-            >
+            <el-input v-model="formData.agent" placeholder="请选择" readonly :disabled="disabled">
               <template #append>
-                <el-button
-                  :icon="Search"
-                  @click="handleAgentSelect"
-                  :disabled="disabled"
-                />
+                <el-button :icon="Search" @click="handleAgentSelect" :disabled="disabled" />
               </template>
             </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="部门领导审批" prop="candidateNames">
-            <el-input
-              v-model="formData.candidateNames"
-              placeholder="请选择"
-              readonly
-              :disabled="disabled"
-            >
+            <el-input v-model="formData.candidateNames" placeholder="请选择" readonly :disabled="disabled">
               <template #append>
-                <el-button
-                  :icon="Search"
-                  @click="handleAssigneeSelect"
-                  :disabled="disabled"
-                />
+                <el-button :icon="Search" @click="handleAssigneeSelect" :disabled="disabled" />
               </template>
             </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="请假事由" prop="reason">
-            <el-input
-              type="textarea"
-              v-model="formData.reason"
-              autocomplete="off"
-              :disabled="disabled"
-            />
+            <el-input type="textarea" v-model="formData.reason" autocomplete="off" :disabled="disabled" />
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <OptionalUserVue
-      v-if="optionalUserDialog.dialogVisible"
-      v-model:dialogVisible="optionalUserDialog.dialogVisible"
-      @select="handleSelect"
-    />
+    <OptionalUserVue v-if="optionalUserDialog.dialogVisible" v-model:dialogVisible="optionalUserDialog.dialogVisible"
+      @select="handleSelect" />
   </div>
 </template>

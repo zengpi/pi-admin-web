@@ -132,8 +132,8 @@ function handleResetQuery() {
     :before-close="handleClose"
     width="60%"
   >
-    <splitpanes class="default-theme">
-      <pane size="20" min-size="15" max-size="30" style="padding-right: 10px">
+    <Splitpanes class="default-theme">
+      <Pane size="20" min-size="15" max-size="30" style="padding-right: 10px">
         <el-input v-model="filterText" placeholder="请输入关键字搜索" />
         <el-tree
           ref="treeRef"
@@ -145,8 +145,8 @@ function handleResetQuery() {
           class="filter-tree"
           @node-click="handleDeptNodeClick"
         />
-      </pane>
-      <pane>
+      </Pane>
+      <Pane>
         <el-header>
           <div class="query">
             <el-input
@@ -186,8 +186,8 @@ function handleResetQuery() {
           <el-table-column prop="name" label="姓名" />
           <el-table-column prop="deptName" label="部门名称" />
         </el-table>
-      </pane>
-    </splitpanes>
+      </Pane>
+    </Splitpanes>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">取消</el-button>

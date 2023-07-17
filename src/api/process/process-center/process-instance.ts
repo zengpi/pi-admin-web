@@ -12,9 +12,10 @@ import type {
   ProcessInstance,
   ProcessInstanceDetail,
   MyProcessQuery,
-} from "@/model/process-center/process-instance";
+  StartProcessInstanceForm
+} from "@/model/process/process-center/process-instance";
 
-const BASE_URL = "/workflow/instance";
+const BASE_URL = "/workflow/process-instance";
 
 /**
  * 获取我的流程
@@ -29,12 +30,12 @@ function getMyProcesses(
  * 启动流程实例
  */
 function startProcessInstance(
-  processDefinitionId: string,
-  formData: Object
+  startProcessInstance: StartProcessInstanceForm
 ): AxiosPromise<string | null> {
+  console.log(startProcessInstance)
   return request.post(
-    `${BASE_URL}/startProcessInstance/${processDefinitionId}`,
-    formData
+    `${BASE_URL}`,
+    startProcessInstance
   );
 }
 

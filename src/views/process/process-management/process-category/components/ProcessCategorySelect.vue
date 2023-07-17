@@ -4,9 +4,9 @@ import { ref, onMounted, computed } from "vue";
 import { ElTable, ElMessage } from "element-plus";
 
 import { BaseQuery } from "@/model";
-import type { ProcessCategory } from "@/model/process-management/process-category";
+import type { ProcessCategory } from "@/model/process/process-management/process-category";
 
-import { getCategories } from "@/api/process-management/process-category";
+import { getCategories } from "@/api/process/process-management/process-category";
 
 const emit = defineEmits<{
   (e: "update:dialogVisible", dialogVisible: boolean): void;

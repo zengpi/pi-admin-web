@@ -8,7 +8,7 @@ import type { AxiosPromise } from "axios";
 import request from "@/util/axios";
 
 import type { BaseQuery, Page } from "@/model";
-import type { ProcessDefinitionForm } from "@/model/process-management/process-form";
+import type { ProcessDefinitionForm } from "@/model/process/process-management/process-form";
 
 const BASE_URL = "/workflow/form";
 
@@ -62,4 +62,4 @@ function getAllForms(): AxiosPromise<Array<ProcessDefinitionForm>> {
   return request.get(`${BASE_URL}/allForms`);
 }
 
-export { getForms, getForm, deleteForms, saveOrUpdate, getAllForms };
+export { getForms, getForm, deleteForms, saveOrUpdate, getAllForms,};

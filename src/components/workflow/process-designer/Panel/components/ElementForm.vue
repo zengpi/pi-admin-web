@@ -16,9 +16,9 @@ import type { Base } from "diagram-js/lib/model";
 import modelerStore from "@/stores/workflow/modeler";
 
 import { BaseQuery } from "@/model";
-import type { ProcessDefinitionForm } from "@/model/process-management/process-form";
+import type { ProcessDefinitionForm } from "@/model/process/process-management/process-form";
 
-import { getForms, getAllForms } from "@/api/process-management/process-form";
+import { getForms, getAllForms } from "@/api/process/process-management/process-form";
 
 import { getFormValue, setFormValue } from "@/util/workflow/bo-utils/formUtil";
 import EventEmitter from "@/util/workflow/EventEmitter";
@@ -30,7 +30,7 @@ const store = modelerStore();
 const { getActive, getActiveId } = storeToRefs(store);
 
 const allForms = ref<ProcessDefinitionForm[]>([]);
-const formId = ref<string | null>(null);
+const formKey = ref<string | null>(null);
 const formName = ref("");
 
 const dialogVisible = ref(false);
@@ -45,12 +45,12 @@ const total = ref(0);
 watch(
   getActiveId,
   () => {
-    formId.value = getFormValue(getActive.value as Base) || "";
+    formKey.value = getFormValue(getActive.value as Base) || "";
     if (allForms.value.length === 0) {
       return;
     }
     formName.value =
-      allForms.value.find((data) => data.id?.toString() === formId.value)
+      allForms.value.find((data) => data.formKey?.toString() === formKey.value)
         ?.name! || "";
   },
   { immediate: true }
@@ -60,15 +60,15 @@ onMounted(() => {
   getAllForms()
     .then(({ data }) => {
       allForms.value = data;
-      formId.value = getFormValue(getActive.value as Base) || "";
+      formKey.value = getFormValue(getActive.value as Base) || "";
       formName.value =
-        allForms.value.find((data) => data.id?.toString() === formId.value)
+        allForms.value.find((data) => data.formKey?.toString() === formKey.value)
           ?.name! || "";
     })
     .catch(() => {});
 
   EventEmitter.on("element-update", () => {
-    formId.value = getFormValue(getActive.value as Base) || "";
+    formKey.value = getFormValue(getActive.value as Base) || "";
   });
 });
 
@@ -91,19 +91,19 @@ function doGetForms() {
 }
 
 function handleFormDelete() {
-  if (formId.value == null) {
+  if (formKey.value == null) {
     return;
   }
-  formId.value = null;
+  formKey.value = null;
   formName.value = "";
   setFormValue(getActive.value as Base, undefined);
 }
 
 function handleRowDbClick(row: ProcessDefinitionForm) {
-  formId.value = row.id!.toString();
+  formKey.value = row.formKey!.toString();
   formName.value = row.name!;
 
-  setFormValue(getActive.value as Base, row.id?.toString());
+  setFormValue(getActive.value as Base, row.formKey?.toString());
 
   dialogVisible.value = false;
 }
@@ -169,6 +169,7 @@ function handleConfirm() {
       >
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column prop="name" label="表单名称" align="center" />
+        <el-table-column prop="formKey" label="表单key" align="center" />
         <el-table-column
           prop="builtIn"
           label="是否内置"
@@ -179,7 +180,7 @@ function handleConfirm() {
           <el-tag v-else-if="row.builtIn === 0" type="warning">否</el-tag>
         </el-table-column>
         <el-table-column prop="componentPath" label="组件路径" align="center" />
-        <el-table-column prop="remark" label="备注" align="center" />
+        <el-table-column prop="remark" label="描述" align="center" />
       </el-table>
       <Pagination
         :total="total"

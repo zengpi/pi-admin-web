@@ -8,35 +8,37 @@ import {
   CircleCheck,
   ChatLineRound,
   SwitchFilled,
-  ArrowLeft,
   CircleClose,
   Plus,
   RefreshLeft,
 } from "@element-plus/icons-vue";
 
-import { ProcessInstanceDetail } from "@/model/process-center/process-instance";
+import { ProcessInstanceDetail } from "@/model/process/process-center/process-instance";
+import type { FormField, ProcessDefinitionForm } from "@/model/process/process-management/process-form";
+import type {
+  ApproveTask,
+  ApproveCommon,
+  ApproveReject,
+} from "@/model/process/process-center/process-task";
+import { OptionalUser, OptionalUserDialog } from "@/model/system/user";
+import { BuiltInFormEnum, APPROVE_BTN_TYPE, FormFieldType } from "@/model/enums/components/workflow";
 
-import { getProcessInstanceDetail } from "@/api/process-center/process-instance";
+import { getProcessInstanceDetail } from "@/api/process/process-center/process-instance";
 import {
   approve,
   delegate,
   getTaskForm,
   reject,
   transfer,
-} from "@/api/process-center/process-task";
+} from "@/api/process/process-center/process-task";
 
-import type { ProcessForm } from "@/model/process-center";
-import type {
-  ApproveTask,
-  ApproveCommon,
-  ApproveReject,
-} from "@/model/process-center/process-task";
-import { OptionalUser, OptionalUserDialog } from "@/model/system/user";
-import { APPROVE_BTN_TYPE } from "@/model/enums/components/workflow/process-detail";
 
 import OptionalUserVue from "@/views/system/user/OptionalUser.vue";
-
 import ProcessViewer from "@/components/workflow/ProcessViewer.vue";
+import FormComponentFactory from "./form/form-component";
+
+const BUILT_IN_FORM_PATH = "/src/components/workflow/form/built-in-form"
+
 const formComponents = import.meta.glob("@/components/workflow/form/**/*.vue");
 
 const emit = defineEmits<{
@@ -61,7 +63,7 @@ const title = `流程详情`;
 let approveBtnType: APPROVE_BTN_TYPE;
 
 const approvalFormRef = ref(ElForm);
-const formRef = ref(ElForm);
+const taskFormRef = ref(ElForm);
 
 const collapseActiveNames = ref(["1", "2", "3", "4", "5"]);
 
@@ -77,7 +79,7 @@ const rules = ref<FormRules>({
 const copyUsers = ref<OptionalUser[]>([]);
 const nextUsers = ref<OptionalUser[]>([]);
 
-const taskForm = ref<ProcessForm | null>(null);
+const taskForm = ref<ProcessDefinitionForm | null>(null);
 
 const optionalUserDialog = ref(new OptionalUserDialog());
 
@@ -94,13 +96,19 @@ onMounted(() => {
   getProcessInstanceDetail(props.processInstanceId!).then(({ data }) => {
     processInstanceDetail.value = data;
     for (let form of processInstanceDetail.value.forms) {
-      form.formComponent = markRaw(
-        defineAsyncComponent(
-          formComponents[
-            `/src/components/workflow/form/${form.componentPath}.vue`
-          ] as any
-        )
-      );
+      if (form.builtIn === BuiltInFormEnum.BUILT_IN) {
+        form.formComponent = markRaw(
+          defineAsyncComponent(
+            formComponents[
+            `${BUILT_IN_FORM_PATH}/${form.componentPath}.vue`
+            ] as any
+          )
+        );
+        form.formData = {}
+        form.fields?.forEach(field => {
+          form.formData![field.name!] = field.value;
+        })
+      }
     }
   });
   if (props.taskId) {
@@ -108,13 +116,15 @@ onMounted(() => {
       .then(({ data }) => {
         taskForm.value = data;
         if (taskForm.value != null) {
-          taskForm.value.formComponent = markRaw(
-            defineAsyncComponent(
-              formComponents[
-                `/src/components/workflow/form/${taskForm.value.componentPath}.vue`
-              ] as any
-            )
-          );
+          if (taskForm.value.builtIn === BuiltInFormEnum.BUILT_IN) {
+            taskForm.value.formComponent = markRaw(
+              defineAsyncComponent(
+                formComponents[
+                `${BUILT_IN_FORM_PATH}/${taskForm.value.componentPath}.vue`
+                ] as any
+              )
+            );
+          }
         }
       })
       .catch((error) => {
@@ -187,28 +197,55 @@ function commentType(type: string | undefined) {
 }
 
 function handleReset() {
-  if (formRef.value) {
-    formRef.value.form.resetFields();
+  if (taskFormRef.value) {
+    if (taskForm.value!.builtIn === BuiltInFormEnum.BUILT_IN) {
+      taskFormRef.value.form.resetFields();
+    } else {
+      taskFormRef.value.resetFields();
+    }
   }
+
   approvalFormRef.value.resetFields();
 }
 
 async function handleComplete() {
-  if (taskForm.value && formRef) {
-    await formRef.value.form.validate((valid: boolean) => {
-      if (!valid) {
-        return;
-      }
-    });
+  if (taskForm.value && taskFormRef) {
+    if (taskForm.value!.builtIn === BuiltInFormEnum.BUILT_IN) {
+      await taskFormRef.value.form.validate((valid: boolean) => {
+        if (!valid) {
+          return;
+        }
+      });
+    } else {
+      await taskFormRef.value.validate((valid: boolean) => {
+        if (!valid) {
+          return;
+        }
+      });
+    }
   }
   if (!approvalFormRef.value) return;
   approvalFormRef.value.validate((valid: boolean) => {
     if (valid) {
+      let variables = {}
+      let formId: string | null | undefined = null;
+      if (taskForm.value) {
+        if (taskForm.value!.builtIn === BuiltInFormEnum.BUILT_IN) {
+          variables = taskForm.value ? taskFormRef.value.formData : undefined;
+        } else {
+          formId = taskForm.value.id;
+          taskForm.value!.fields?.forEach(field => {
+            variables[field.id!] = field.value;
+          })
+        }
+      }
+
       let approveTask: ApproveTask = {
         taskId: props.taskId,
         processInstanceId: props.processInstanceId,
         comment: approvalForm.value.comment,
-        variables: taskForm.value ? formRef.value.formData : undefined,
+        variables: variables,
+        formId: formId!,
         copyUsers: copyUsers.value.map((copyUser) => copyUser.username!),
         nextUsers: nextUsers.value.map((nextUser) => nextUser.username!),
       };
@@ -329,163 +366,145 @@ function handleClose(type: APPROVE_BTN_TYPE, item: OptionalUser) {
     );
   }
 }
+
+function getFieldClass(field: FormField) {
+
+}
+
+function getRules(field: FormField) {
+  const rules: object[] = [{
+    required: !!field.required,
+    message: field.name + '不能为空',
+    trigger: ['change', 'input', 'blur'],
+  }];
+
+  return rules;
+}
+
+function getFieldComponent(field: FormField) {
+  return FormComponentFactory.getComponent(field.type);
+}
 </script>
 
 <template>
-  <el-dialog
-    v-model="dialogVisible"
-    :title="title"
-    :before-close="closeDialog"
-    fullscreen
-  >
+  <el-dialog v-model="dialogVisible" :title="title" :before-close="closeDialog" fullscreen>
     <el-collapse v-model="collapseActiveNames">
       <el-collapse-item title="表单信息" name="2">
         <template v-for="form in processInstanceDetail.forms" :key="form.id">
           <el-card shadow="hover">
             <template #header>
               <span>{{ form.name }}</span>
+              <el-tag v-if="form.version" type="warning" effect="dark" class="form-name-tag">
+                v{{ form.version }}
+              </el-tag>
             </template>
-            <component
-              v-if="form.formComponent"
-              :is="form.formComponent"
-              :form-data="form.formData"
-              :disabled="true"
-            >
+            <component v-if="form.builtIn === BuiltInFormEnum.BUILT_IN && form.formComponent" :is="form.formComponent"
+              :form-data="form.formData" :disabled="true">
             </component>
+            <template v-else>
+              <el-form label-position="right" :model="form" label-width="10em" label-suffix=":">
+                <el-row :gutter="10">
+                  <template v-for="(field, index) in form.fields" :key="field.id">
+                    <el-col :span="24" v-if="field.type === FormFieldType.EXPRESSION">
+                      <el-divider><el-text type="warning">{{ field.value }}</el-text></el-divider>
+                    </el-col>
+                    <el-col v-else :span="8">
+                      <el-form-item :class="getFieldClass(field)" :label="field.name" :prop="'fields.' + index + '.value'"
+                        :rules="getRules(field)">
+                        <component :ref="field.id" :is="getFieldComponent(field)" v-model:value="field.value"
+                          :options="field.options" :readonly="field.readOnly!">
+                        </component>
+                      </el-form-item>
+                    </el-col>
+                  </template>
+                </el-row>
+              </el-form>
+            </template>
           </el-card>
         </template>
         <el-card shadow="hover" v-if="taskForm != null">
           <template #header>
             <span>{{ taskForm.name }}</span>
+            <el-tag v-if="taskForm.version" type="warning" effect="dark" class="form-name-tag">
+              v{{ taskForm.version }}
+            </el-tag>
           </template>
-          <component
-            ref="formRef"
-            v-if="taskForm.formComponent"
-            :is="taskForm.formComponent"
-          >
+          <component ref="taskFormRef" v-if="taskForm.builtIn === BuiltInFormEnum.BUILT_IN && taskForm.formComponent"
+            :is="taskForm.formComponent">
           </component>
+          <template v-else>
+            <el-form ref="taskFormRef" label-position="right" :model="taskForm" label-width="10em" label-suffix=":">
+              <el-row :gutter="10">
+                <template v-for="(field, index) in taskForm.fields" :key="field.id">
+                  <el-col :span="24" v-if="field.type === FormFieldType.EXPRESSION">
+                    <el-divider><el-text type="warning">{{ field.value }}</el-text></el-divider>
+                  </el-col>
+                  <el-col v-else :span="8">
+                    <el-form-item :class="getFieldClass(field)" :label="field.name" :prop="'fields.' + index + '.value'"
+                      :rules="getRules(field)">
+                      <component :ref="field.id" :is="getFieldComponent(field)" v-model:value="field.value"
+                        :options="field.options" :readonly="field.readOnly!">
+                      </component>
+                    </el-form-item>
+                  </el-col>
+                </template>
+              </el-row>
+            </el-form>
+          </template>
         </el-card>
       </el-collapse-item>
       <el-collapse-item title="审批" name="3" v-if="isApproval">
         <el-row>
           <el-col :span="20" :offset="2">
-            <el-form
-              ref="approvalFormRef"
-              :model="approvalForm"
-              :rules="rules"
-              label-width="120px"
-            >
+            <el-form ref="approvalFormRef" :model="approvalForm" :rules="rules" label-width="120px">
               <el-form-item label="审批意见" prop="comment">
-                <el-input
-                  type="textarea"
-                  :rows="5"
-                  v-model="approvalForm.comment"
-                  placeholder="请输入审批意见"
-                />
+                <el-input type="textarea" :rows="5" v-model="approvalForm.comment" placeholder="请输入审批意见" />
               </el-form-item>
               <el-form-item label="抄送人" prop="copyUserIds">
-                <el-tag
-                  :key="index"
-                  v-for="(item, index) in copyUsers"
-                  closable
-                  :disable-transitions="false"
-                  @close="handleClose(APPROVE_BTN_TYPE.COPY, item)"
-                  style="margin-right: 5px"
-                >
+                <el-tag :key="index" v-for="(item, index) in copyUsers" closable :disable-transitions="false"
+                  @close="handleClose(APPROVE_BTN_TYPE.COPY, item)" style="margin-right: 5px">
                   {{ item.name }}
                 </el-tag>
-                <el-button
-                  type="primary"
-                  class="button-new-tag"
-                  :icon="Plus"
-                  circle
-                  @click="handleSelectCopyUsers"
-                />
+                <el-button type="primary" class="button-new-tag" :icon="Plus" circle @click="handleSelectCopyUsers" />
               </el-form-item>
               <el-form-item label="下一级审批人" prop="nextUserIds">
-                <el-tag
-                  :key="index"
-                  v-for="(item, index) in nextUsers"
-                  closable
-                  :disable-transitions="false"
-                  @close="handleClose(APPROVE_BTN_TYPE.NEXT, item)"
-                  style="margin-right: 5px"
-                >
+                <el-tag :key="index" v-for="(item, index) in nextUsers" closable :disable-transitions="false"
+                  @close="handleClose(APPROVE_BTN_TYPE.NEXT, item)" style="margin-right: 5px">
                   {{ item.name }}
                 </el-tag>
-                <el-button
-                  type="primary"
-                  class="button-new-tag"
-                  :icon="Plus"
-                  circle
-                  @click="handleSelectNextUsers"
-                />
+                <el-button type="primary" class="button-new-tag" :icon="Plus" circle @click="handleSelectNextUsers" />
               </el-form-item>
             </el-form>
           </el-col>
         </el-row>
         <el-row :gutter="10" type="flex" justify="center">
           <el-col :span="1.5" v-if="taskForm != null">
-            <el-button :icon="RefreshLeft" type="info" @click="handleReset"
-              >重置表单</el-button
-            >
+            <el-button :icon="RefreshLeft" type="info" @click="handleReset">重置表单</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button
-              :icon="CircleCheck"
-              type="success"
-              @click="handleComplete"
-              >通过</el-button
-            >
+            <el-button :icon="CircleCheck" type="success" @click="handleComplete">通过</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button
-              :icon="ChatLineRound"
-              type="primary"
-              @click="handleDelegate"
-              >委派</el-button
-            >
+            <el-button :icon="ChatLineRound" type="primary" @click="handleDelegate">委派</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button
-              :icon="SwitchFilled"
-              type="success"
-              @click="handleTransfer"
-              >转办</el-button
-            >
+            <el-button :icon="SwitchFilled" type="success" @click="handleTransfer">转办</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button :icon="CircleClose" type="danger" @click="handleReject"
-              >驳回</el-button
-            >
+            <el-button :icon="CircleClose" type="danger" @click="handleReject">驳回</el-button>
           </el-col>
         </el-row>
       </el-collapse-item>
       <el-collapse-item title="日志" name="4">
         <el-timeline>
-          <el-timeline-item
-            v-for="(log, index) in processInstanceDetail.logs"
-            :key="index"
-            :icon="getIcon(log.endTime)"
-            :color="getColor(log.endTime)"
-          >
+          <el-timeline-item v-for="(log, index) in processInstanceDetail.logs" :key="index" :icon="getIcon(log.endTime)"
+            :color="getColor(log.endTime)">
             <p style="font-weight: 700">{{ log.activityName }}</p>
-            <el-card
-              v-if="log.activityType === 'startEvent'"
-              class="box-card"
-              shadow="hover"
-            >
+            <el-card v-if="log.activityType === 'startEvent'" class="box-card" shadow="hover">
               {{ log.assigneeName }} 在 {{ log.startTime }} 发起流程
             </el-card>
-            <el-card
-              v-if="log.activityType === 'userTask'"
-              class="box-card"
-              shadow="hover"
-            >
-              <el-descriptions
-                :column="5"
-                :labelStyle="{ 'font-weight': 'bold' }"
-              >
+            <el-card v-if="log.activityType === 'userTask'" class="box-card" shadow="hover">
+              <el-descriptions :column="5" :labelStyle="{ 'font-weight': 'bold' }">
                 <el-descriptions-item label="实际办理">{{
                   log.assigneeName || "-"
                 }}</el-descriptions-item>
@@ -508,40 +527,29 @@ function handleClose(type: APPROVE_BTN_TYPE, item: OptionalUser) {
                     <el-tag :type="commentTagType(comment.type)">{{
                       commentType(comment.type)
                     }}</el-tag>
-                    <el-tag
-                      type="info"
-                      effect="plain"
-                      style="margin-left: 5px"
-                      >{{ comment.time }}</el-tag
-                    >
+                    <el-tag type="info" effect="plain" style="margin-left: 5px">{{ comment.time }}</el-tag>
                   </el-divider>
                   <span>{{ comment.fullMessage }}</span>
                 </div>
               </div>
             </el-card>
-            <el-card
-              v-if="log.activityType === 'endEvent'"
-              class="box-card"
-              shadow="hover"
-            >
+            <el-card v-if="log.activityType === 'endEvent'" class="box-card" shadow="hover">
               {{ log.startTime }} 结束流程
             </el-card>
           </el-timeline-item>
         </el-timeline>
       </el-collapse-item>
       <el-collapse-item title="流程跟踪" name="5">
-        <ProcessViewer
-          v-if="processInstanceDetail.bpmnXml"
-          :bpmn-xml="processInstanceDetail.bpmnXml"
-          :logs="processInstanceDetail.logs"
-          :viewer-element="processInstanceDetail.viewerElement"
-        />
+        <ProcessViewer v-if="processInstanceDetail.bpmnXml" :bpmn-xml="processInstanceDetail.bpmnXml"
+          :logs="processInstanceDetail.logs" :viewer-element="processInstanceDetail.viewerElement" />
       </el-collapse-item>
     </el-collapse>
-    <OptionalUserVue
-      v-if="optionalUserDialog.dialogVisible"
-      v-model:dialog-visible="optionalUserDialog.dialogVisible"
-      @select="userSelect"
-    />
+    <OptionalUserVue v-if="optionalUserDialog.dialogVisible" v-model:dialog-visible="optionalUserDialog.dialogVisible"
+      @select="userSelect" />
   </el-dialog>
 </template>
+<style lang="scss" scoped>
+.form-name-tag {
+  margin-left: 10px;
+}
+</style>

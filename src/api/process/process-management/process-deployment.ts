@@ -8,7 +8,7 @@ import type { AxiosPromise } from "axios";
 import request from "@/util/axios";
 
 import type { BaseQuery, Page } from "@/model";
-import type { ProcessDeployment } from "@/model/process-management/process-deployment";
+import type { ProcessDeployment } from "@/model/process/process-management/process-deployment";
 
 const BASE_URL = "/workflow/deployment";
 

@@ -6,7 +6,7 @@
  */
 import { computed, onMounted, ref } from "vue";
 
-import { getBpmnXml } from "@/api/process-management/process-definition";
+import { getBpmnXml } from "@/api/process/process-management/process-definition";
 
 import ProcessViewer from "@/components/workflow/ProcessViewer.vue";
 

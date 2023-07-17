@@ -13,12 +13,12 @@ import {
   ProcessDefinitionQuery,
   ProcessDefinitionDialog,
   ProcessDefinition,
-} from "@/model/process-management/process-definition";
+} from "@/model/process/process-management/process-definition";
 
 import {
   getHistoryProcessDefinitions,
   changeState,
-} from "@/api/process-management/process-definition";
+} from "@/api/process/process-management/process-definition";
 
 import Pagination from "@/components/Pagination.vue";
 import ProcessDiagramDialogVue from "@/components/workflow/ProcessDiagramDialog.vue";

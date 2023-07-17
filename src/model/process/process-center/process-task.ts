@@ -1,4 +1,4 @@
-import { PageQuery } from "..";
+import { PageQuery } from "../..";
 
 /**
  * 代办任务
@@ -61,13 +61,18 @@ class ApproveTask {
    */
   processInstanceId?: string;
   /**
+     * 表单 id
+     */
+  formId?: string;
+  /**
    * 审批意见
    */
   comment?: string;
+  outcome?: string;
   /**
    * 流程变量
    */
-  variables?: Map<string, Object>;
+  variables?: any;
   /**
    * 抄送人
    */

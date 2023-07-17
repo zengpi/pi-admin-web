@@ -8,10 +8,10 @@ import { ref, onMounted } from "vue";
 
 import { Pointer, Search, RefreshLeft, Refresh } from "@element-plus/icons-vue";
 
-import { TaskQuery, type TodoTask } from "@/model/process-center/process-task";
-import { ProcessDetailDialog } from "@/model/process-center";
+import { TaskQuery, type TodoTask } from "@/model/process/process-center/process-task";
+import { ProcessDetailDialog } from "@/model/process/process-center";
 
-import { getTodoTask } from "@/api/process-center/process-task";
+import { getTodoTask } from "@/api/process/process-center/process-task";
 
 import ProcessDetail from "@/components/workflow/ProcessDetail.vue";
 import Pagination from "@/components/Pagination.vue";

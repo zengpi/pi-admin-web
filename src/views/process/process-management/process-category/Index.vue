@@ -12,12 +12,12 @@ import {
 } from "@element-plus/icons-vue";
 
 import { FormDialog, BaseQuery } from "@/model";
-import type { ProcessCategory } from "@/model/process-management/process-category";
+import type { ProcessCategory } from "@/model/process/process-management/process-category";
 
 import {
   getCategories,
   deleteCategories,
-} from "@/api/process-management/process-category";
+} from "@/api/process/process-management/process-category";
 
 import Form from "./Form.vue";
 import Pagination from "@/components/Pagination.vue";

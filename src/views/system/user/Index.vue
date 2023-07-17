@@ -267,8 +267,8 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <splitpanes class="default-theme">
-      <pane size="15" min-size="15" max-size="30" style="padding-right: 10px">
+    <Splitpanes class="default-theme">
+      <Pane size="15" min-size="15" max-size="30" style="padding-right: 10px">
         <el-input v-model="filterText" placeholder="请输入关键字搜索" />
         <el-tree
           ref="treeRef"
@@ -280,8 +280,8 @@ onMounted(() => {
           class="filter-tree"
           @node-click="handleDeptNodeClick"
         />
-      </pane>
-      <pane>
+      </Pane>
+      <Pane>
         <el-header>
           <div class="query">
             <template v-if="showQuery">
@@ -474,7 +474,7 @@ onMounted(() => {
           v-model:dialogVisible="userImportDialog.dialogVisible"
           @refresh="loadData"
         />
-      </pane>
-    </splitpanes>
+      </Pane>
+    </Splitpanes>
   </div>
 </template>

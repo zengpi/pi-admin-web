@@ -29,7 +29,7 @@ pi-admin-web 是 pi-admin 的前端源码，它是基于 Vue 3、Vite、Typescri
 
 **master**：主分支。最新代码的稳定分支。
 
-**1.x**：1.0 版本稳定分支。
+**1.0.x**：1.0 版本稳定分支。
 
 **dev**：开发分支。此分支代码随时修改，不稳定。
 
@@ -133,12 +133,11 @@ npm run preview
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610200743.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610200755.png) |
 | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610200810.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610200824.png) |
-| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/2023-06-26/20230628095614.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610200848.png) |
-| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201007.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201029.png) |
-| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201053.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201111.png) |
-| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201135.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201151.png) |
-| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201210.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201225.png) |
-| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201236.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201249.png) |
-| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201307.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201326.png) |
-| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201339.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201351.png) |
-| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201405.png) |                                                              |
+| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610200848.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201007.png) |
+| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201029.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201053.png) |
+| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201111.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201135.png) |
+| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201151.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201210.png) |
+| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201225.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201236.png) |
+| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201249.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201307.png) |
+| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201326.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201339.png) |
+| ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201351.png) | ![](https://cdn.jsdelivr.net/gh/zengpi/image-hosting-service/pi-admin/20230610201405.png) |

@@ -4,13 +4,13 @@ import { ref, onMounted, computed } from "vue";
 import { ElForm, ElMessage, type FormRules } from "element-plus";
 import { Search } from "@element-plus/icons-vue";
 
-import { saveModel, updateModel } from "@/api/process-management/process-model";
+import { saveModel, updateModel } from "@/api/process/process-management/process-model";
 
-import { ProcessModel } from "@/model/process-management/process-model";
+import { ProcessModel } from "@/model/process/process-management/process-model";
 import {
   ProcessCategory,
   ProcessCategoryDialog,
-} from "@/model/process-management/process-category";
+} from "@/model/process/process-management/process-category";
 
 import ProcessCategorySelect from "@/views/process/process-management/process-category/components/ProcessCategorySelect.vue";
 

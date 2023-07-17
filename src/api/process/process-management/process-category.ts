@@ -8,7 +8,7 @@ import type { AxiosPromise } from "axios";
 import request from "@/util/axios";
 
 import type { BaseQuery, Page } from "@/model";
-import type { ProcessCategory } from "@/model/process-management/process-category";
+import type { ProcessCategory } from "@/model/process/process-management/process-category";
 
 const BASE_URL = "/workflow/category";
 
